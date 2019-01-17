@@ -1,0 +1,19 @@
+---
+
+- name: set spark-env.sh
+  template: src="spark-env-sh.j2" dest="{{ spark.install_dir }}/{{ spark_path }}/conf/spark-env.sh"
+  become: true
+  tags: spark-node
+
+- name: set spark-defaults.conf
+  template: src="spark-defaults-conf.j2" dest="{{ spark.install_dir}}/{{ spark_path }}/conf/spark-defaults.conf"
+  become: true
+  tags: spark-node
+
+# this doesn't work... need the non-fqdn output from hostname
+#- name: ensure self dns is in /etc/hosts
+#  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}" state=present
+#  when: hostvars[item].ansible_default_ipv4.address is defined
+#  become: true
+#  with_items:
+#    - "{{ ansible_nodename }}"

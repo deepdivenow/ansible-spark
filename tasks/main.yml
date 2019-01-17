@@ -1,0 +1,13 @@
+
+- name: set spark distribution fact
+  set_fact: spark_path=spark-{{ spark.version }}-bin-hadoop{{ spark.hadoop_version }}
+
+- import_tasks: install.yml
+  tags: [spark,spark-install]
+- import_tasks: config.yml
+  tags: [spark,spark-config]
+- import_tasks: service.yml
+  tags: [spark,spark-service]
+
+
+

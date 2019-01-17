@@ -1,0 +1,50 @@
+---
+
+- name: Create group spark
+  group:
+    name: spark
+    state: present
+  become: true
+  tags: spark-node
+
+- name: Create user spark
+  user:
+    name: spark
+    group: spark
+  become: true
+  tags: spark-node
+
+- name: create spark install and working directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: spark
+    group: spark
+  become: true
+  tags: spark-node
+  with_items:
+  - "{{ spark.working_dir }}"
+  - "{{ spark.install_dir }}"
+
+- name: Check spark was downloaded
+  command: test -f {{ spark.temp_dir }}/{{ spark_path }}.tgz
+  register: spark_downloaded
+  failed_when: spark_downloaded.rc not in [0, 1]
+  changed_when: False
+  tags: spark-node
+
+- name: Download spark
+  get_url: url="{{ spark.mirror }}/{{ spark_path }}.tgz" dest="{{ spark.temp_dir }}"
+  when: spark_downloaded.rc == 1
+  tags: spark-node
+
+- name: unarchive to the install directory
+  unarchive:
+    src: "{{ spark.temp_dir }}/{{ spark_path }}.tgz"
+    dest: "{{ spark.install_dir }}"
+    owner: spark
+    group: spark
+    creates: "{{ spark.install_dir }}/{{ spark_path }}/RELEASE"
+    remote_src: True
+  become: true
+  tags: spark-node
