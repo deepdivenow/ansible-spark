@@ -1,3 +1,11 @@
-spark.ui.port	4040
-spark.driver.port	9929
-spark.executor.port	9939
+{% for k,v in spark_default_properties.iteritems() %}
+{% if v is string %}
+{{ "{0}".format(k).ljust(32) }} {{ v }}
+{% elif v is sequence %}
+{% for vi in v %}
+{{ "{0}".format(k).ljust(32)  }}    {{ vi }}
+{% endfor %}
+{% else %}
+{{ "{0}".format(k).ljust(32)  }}    {{ v }}
+{% endif %}
+{% endfor %}

@@ -1,14 +1,20 @@
 ---
 spark_tmp_dir: /tmp
-spark_version: 2.3.2
+spark_version: 2.3.3
 spark_hadoop_version: 2.7
 spark_working_dir: /var/lib/spark
-spark_install_dir: /opt/spark
+spark_install_dir: /opt
 spark_master_work_port: 7077
 spark_worker_work_port: 7078
 spark_master_ui_port: 8080
 spark_worker_ui_port: 8081
 spark_mirror: "http://apache-mirror.rbc.ru/pub/apache/spark/spark-{{ spark_version }}"
 spark_path: "spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}"
-
-zookeepers: []
+spark_master_exporter_enable: False
+spark_worker_exporter_enable: False
+spark_master_exporter_port: 9495
+spark_worker_exporter_port: 9496
+spark_default_properties:
+  spark.ui.port:	4040
+  spark.driver.port:	9929
+  spark.executor.port:	9939

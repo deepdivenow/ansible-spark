@@ -1,8 +1,25 @@
 ---
 - import_tasks: install.yml
   tags: [spark,spark-install]
+
+- include_role:
+    name: jmx-exporter
+  vars:
+    jmx_exporter_service: 'spark_master'
+    jmx_exporter_port: "{{ spark_master_exporter_port }}"
+  when: spark_master_exporter_enable
+  tags: [spark,spark-install]
+
+- include_role:
+    name: jmx-exporter
+  vars:
+    jmx_exporter_service: 'spark_worker'
+    jmx_exporter_port: "{{ spark_worker_exporter_port }}"
+  when: spark_worker_exporter_enable
+  tags: [spark,spark-install]
+
 - import_tasks: config.yml
-  tags: [spark,spark-config]
+  tags: [spark,spark-configure]
 - import_tasks: service.yml
   tags: [spark,spark-service]
 

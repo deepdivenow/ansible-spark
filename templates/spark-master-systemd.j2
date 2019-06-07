@@ -8,7 +8,11 @@ Type=forking
 User=spark
 WorkingDirectory={{ spark_working_dir }}
 #ExecStart={{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/sbin/start-master.sh --port {{ spark_master_work_port }} --webui-port {{ spark_master_ui_port }} --work-dir {{ spark_working_dir }} --properties-file {{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/spark-defaults.conf
-ExecStart={{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/sbin/start-master.sh 
+{% if spark_master_exporter_enable %}
+ExecStart={{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/sbin/start-master.sh --driver-java-options="-javaagent:{{ jmx_exporter_dir }}/jmx_prometheus_javaagent.jar={{ spark_master_exporter_port }}:{{ jmx_exporter_dir }}/spark_metrics.yml"
+{% else %}
+ExecStart={{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/sbin/start-master.sh
+{% endif %}
 ExecStop={{ spark_install_dir }}/spark-{{ spark_version }}-bin-hadoop{{ spark_hadoop_version }}/sbin/stop-master.sh
 Restart=on-abort
 
